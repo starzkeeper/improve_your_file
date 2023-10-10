@@ -2,8 +2,11 @@ from moviepy.editor import VideoFileClip
 import os
 
 
-def convert_mp4_to_mp3(mp4_file):
-    video = VideoFileClip(f'media/uploads/{mp4_file.mp4_filename()}')
+def convert_mp4_to_mp3(input_file):
+    if isinstance(input_file, str):
+        video = VideoFileClip(input_file)
+    else:
+        video = VideoFileClip(f'media/uploads/{input_file.mp4_filename()}')
     mp3_file = video.audio.write_audiofile(f'media/final/converted.mp3')
     print('ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО ЗАКОНЧЕНО')
     return mp3_file
