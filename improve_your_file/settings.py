@@ -128,3 +128,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+CELERY_BROKER_URL = 'redis://192.168.1.4:6379'
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://192.168.1.4:6379/1',  # Замените <IP-ADDRESS> на фактический IP-адрес
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
