@@ -1,9 +1,9 @@
 import os
-
-from django.http import FileResponse
+from wsgiref.util import FileWrapper
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import render
 from .forms import UploadUrlForm
-from .utils import yt_download
+from .utils import yt_download, delete_quotes
 from video_convertor.utils import convert_mp4_to_mp3
 from video_convertor.models import UploadedFile
 
@@ -16,11 +16,16 @@ def yt_url(request):
             url = form.cleaned_data.get('url')
             file_name = yt_download(url)
             if button_action == 'action1':
-                video_file = open(file_name, 'rb')
-                response = FileResponse(video_file)
-                response['Content-Type'] = 'video/mp4'
-                response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-                return response
+                if os.path.exists(file_name):
+                    file = FileWrapper(open(f'{file_name}', 'rb'))
+                    response = HttpResponse(file, content_type='video/mp4')
+                    response['Content-Disposition'] = f'attachment; filename={delete_quotes(file_name)}'
+
+                    os.remove(file_name)
+
+                    return response
+                else:
+                    return HttpResponse("File not found", status=404)
 
             elif button_action == 'action2':
                 convert_mp4_to_mp3(file_name)
@@ -36,7 +41,6 @@ def yt_url(request):
                 os.remove(f'media/final/{mp3_filename}')
 
                 return response
-            os.remove(file_name)
     else:
         form = UploadUrlForm()
 
