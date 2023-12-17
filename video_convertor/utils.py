@@ -18,5 +18,3 @@ def delete_files_from_uploads():  # Удаление файлов из папк�
         files = [os.path.join('media/uploads', file) for file in files]
         for file in files:
             os.remove(file)
-
-
