@@ -11,10 +11,7 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         file_data = request.FILES['file']
         if form.is_valid():
-            notdb_mp4_file = file_data  # Получение загруженного MP4 файла
-            mp4_file = UploadedFile.objects.create(mp4_file=notdb_mp4_file)
-            convert_mp4_to_mp3(mp4_file)  # Конвертация в MP3
-            mp3_file = UploadedFile.objects.create(mp3_file='converted.mp3')
+            mp3_file = convert_mp4_to_mp3(file_data.read())  # Конвертация в MP3
             mp3_filename = mp3_file.mp3_filename()
 
             mp3_path = os.path.join('media/final/', mp3_filename)
