@@ -10,17 +10,16 @@ def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         file_data = request.FILES['file']
+        filename = file_data.name
         if form.is_valid():
-            mp3_file = convert_mp4_to_mp3(file_data.read())  # Конвертация в MP3
-            mp3_filename = mp3_file.mp3_filename()
+            mp3_file, mp3_path = convert_mp4_to_mp3(file_data)  # Конвертация в MP3
 
-            mp3_path = os.path.join('media/final/', mp3_filename)
             mp3_file = open(mp3_path, 'rb')
             response = FileResponse(mp3_file)
             response['Content-Type'] = 'audio/mpeg'
-            response['Content-Disposition'] = f'attachment; filename="{mp3_filename}"'
+            response['Content-Disposition'] = f'attachment; filename="{mp3_path}"'
 
-            os.remove(f'media/final/{mp3_filename}')
+            os.remove(mp3_path)
             delete_files_from_uploads()
             return response
     else:
